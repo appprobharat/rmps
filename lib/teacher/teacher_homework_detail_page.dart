@@ -137,11 +137,7 @@ class TeacherHomeworkDetailPage extends StatelessWidget {
                     onPressed: () {
                       String fileUrl = homework['Attachment'].toString();
 
-                      if (!fileUrl.startsWith('http')) {
-                        fileUrl =
-                            'https://s3.ap-south-1.amazonaws.com/'
-                            'school.edusathi.in/homeworks/$fileUrl';
-                      }
+                    fileUrl = ApiService.getFullUrl(fileUrl);
 
                       debugPrint("📎 TEACHER HW DETAIL DOWNLOAD URL: $fileUrl");
 

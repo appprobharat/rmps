@@ -9,6 +9,7 @@ import 'login_page.dart';
 class ApiService {
   /// 🔥 CHANGE ONLY HERE
   static const String baseUrl = "https://rmps.apppro.in/api";
+  static const String Url = "https://rmps.apppro.in";
 
   /// ⏱ Timeout (iOS safe)
   static const Duration timeout = Duration(seconds: 20);
@@ -30,6 +31,11 @@ class ApiService {
     }
 
     return prefs.getString('auth_token') ?? '';
+  }
+
+  static Future<Map<String, String>> multipartHeaders() async {
+    final token = await _getToken();
+    return {'Authorization': 'Bearer $token', 'Accept': 'application/json'};
   }
 
   // ================= LOGOUT =================
@@ -193,16 +199,20 @@ class ApiService {
 
   // ================= ATTACHMENTS =================
   static const siblingUrl = 'https://rmps.apppro.in/uploads/no_image.png';
-  static const String s3Base =
-      "https://s3.ap-south-1.amazonaws.com/rmps.apppro.in";
 
-  static String attachmentUrl(String schoolId, String folder, String file) {
-    return "$s3Base/documents/$schoolId/$folder/$file";
+  // ================= FILE / IMAGE URL =================
+static String getFullUrl(String path) {
+  if (path.isEmpty) return '';
+  if (path.startsWith('http')) return path;
+
+  // remove starting slash (double // avoid)
+  if (path.startsWith('/')) {
+    path = path.substring(1);
   }
 
-  static String homeworkAttachment(String fileName) {
-    return "$s3Base/homeworks/$fileName";
-  }
+  return "$Url/$path";
+}
+
 }
 
 class AppColors {

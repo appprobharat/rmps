@@ -7,7 +7,6 @@ import 'package:raj_modern_public_school/api_service.dart';
 import 'package:raj_modern_public_school/teacher/teacher_homework_detail_page.dart';
 import 'package:raj_modern_public_school/teacher/teacher_homework_page.dart';
 
-
 class TeacherRecentHomeworks extends StatelessWidget {
   final List<Map<String, dynamic>> homeworks;
 
@@ -78,8 +77,10 @@ class TeacherRecentHomeworks extends StatelessWidget {
                                 Icons.download,
                                 color: AppColors.primary,
                               ),
-                              onPressed: () {
+                              onPressed: () async {
                                 final attachment = hw['Attachment'];
+
+                                debugPrint("🟡 RAW ATTACHMENT: $attachment");
 
                                 if (attachment == null ||
                                     attachment.toString().isEmpty) {
@@ -91,16 +92,11 @@ class TeacherRecentHomeworks extends StatelessWidget {
                                   return;
                                 }
 
-                                // ✅ Teacher homework FINAL S3 URL
-                                final String fileUrl =
-                                    attachment.toString().startsWith('http')
-                                    ? attachment.toString()
-                                    : 'https://s3.ap-south-1.amazonaws.com/'
-                                          'school.edusathi.in/homeworks/$attachment';
-
-                                debugPrint(
-                                  "📎 TEACHER HW DOWNLOAD URL: $fileUrl",
+                                final String fileUrl = ApiService.getFullUrl(
+                                  attachment.toString(),
                                 );
+
+                                debugPrint("✅ FINAL DOWNLOAD URL: $fileUrl");
 
                                 _downloadFile(context, fileUrl);
                               },
@@ -136,6 +132,8 @@ class TeacherRecentHomeworks extends StatelessWidget {
       debugPrint("⬇️ Downloading: $url");
 
       final response = await http.get(Uri.parse(url));
+      debugPrint("📡 RESPONSE STATUS: ${response.statusCode}");
+      debugPrint("📦 RESPONSE LENGTH: ${response.bodyBytes.length}");
       if (response.statusCode != 200 || response.bodyBytes.isEmpty) {
         throw Exception("Failed to download file");
       }

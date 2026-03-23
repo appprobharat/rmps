@@ -33,10 +33,7 @@ class _TeacherComplaintListPageState extends State<TeacherComplaintListPage> {
     if (mounted) setState(() => isLoading = true);
 
     try {
-      final response = await ApiService.post(
-        context,
-        'https://school.edusathi.in/api/teacher/complaint',
-      );
+      final response = await ApiService.post(context, '/teacher/complaint');
 
       // token expired → AuthHelper already logout kara dega
       if (response == null || !mounted) return;
@@ -268,7 +265,7 @@ class _TeacherComplaintListPageState extends State<TeacherComplaintListPage> {
 
               await http.post(
                 Uri.parse(
-                  "https://school.edusathi.in/api/teacher/complaint/history/store",
+                  "${ApiService.baseUrl}/teacher/complaint/history/store",
                 ),
                 headers: {
                   'Authorization': 'Bearer $token',

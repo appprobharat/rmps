@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:raj_modern_public_school/login_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:raj_modern_public_school/Attendance_UI/stu_attendance_page.dart';
 import 'package:raj_modern_public_school/Exam/exam_schedule.dart';
@@ -979,10 +980,10 @@ class InfoCard extends StatelessWidget {
     final String schoolId = item["SchoolId"]?.toString() ?? '';
     final bool hasAttachment =
         attachment != null && attachment.isNotEmpty && schoolId.isNotEmpty;
-    final String folder = isEvent ? 'event' : 'notice';
-    final String fullAttachmentUrl = hasAttachment
-        ? ApiService.attachmentUrl(schoolId, folder, attachment)
-        : '';
+
+  final String fullAttachmentUrl = hasAttachment
+    ? ApiService.getFullUrl(attachment)
+    : '';
 
     debugPrint("📎 NOTICE ATTACHMENT URL: $fullAttachmentUrl");
 
@@ -1413,12 +1414,23 @@ class LeftSidebarMenu extends StatelessWidget {
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: const Text("Cancel", style: TextStyle(color: AppColors.primary),),
+                        child: const Text(
+                          "Cancel",
+                          style: TextStyle(color: AppColors.primary),
+                        ),
                       ),
                       TextButton(
-                        onPressed: () {
+                        onPressed: () async {
                           Navigator.pop(context);
-                          ApiService.post(context, "/logout");
+
+                          final prefs = await SharedPreferences.getInstance();
+                          await prefs.clear();
+                          if (!context.mounted) return;
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (_) => LoginPage()),
+                            (route) => false,
+                          );
                         },
                         child: const Text("Logout"),
                       ),

@@ -87,10 +87,7 @@ class _TeacherHomeworkPageState extends State<TeacherHomeworkPage> {
   // ---------------- FILE DOWNLOAD (IOS + ANDROID SAFE) ----------------
  Future<void> downloadFile(BuildContext context, String attachmentPath) async {
   try {
-    final String fileUrl = attachmentPath.startsWith('http')
-        ? attachmentPath
-        : 'https://s3.ap-south-1.amazonaws.com/'
-            'school.edusathi.in/homeworks/$attachmentPath';
+ final String fileUrl = ApiService.getFullUrl(attachmentPath);
 
     debugPrint("⬇️ Download URL: $fileUrl");
 
@@ -106,7 +103,7 @@ class _TeacherHomeworkPageState extends State<TeacherHomeworkPage> {
 
     // ================= ANDROID =================
     if (Platform.isAndroid) {
-      // ✅ REAL Downloads folder (user visible)
+    
       final Directory downloadsDir =
           Directory('/storage/emulated/0/Download');
 

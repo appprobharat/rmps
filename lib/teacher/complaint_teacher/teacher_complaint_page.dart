@@ -39,7 +39,7 @@ class _TeacherComplaintPageState extends State<TeacherComplaintPage> {
 
       final response = await ApiService.post(
         context,
-        'https://school.edusathi.in/api/teacher/complaint/history',
+        '/teacher/complaint/history',
         body: {'ComplaintId': widget.complaintId},
       );
 

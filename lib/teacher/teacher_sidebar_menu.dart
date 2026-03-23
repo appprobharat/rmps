@@ -55,9 +55,9 @@ class _TeacherSidebarMenuState extends State<TeacherSidebarMenu> {
 
   String getPhotoUrl(String photo) {
     if (photo.isEmpty) return '';
-    return photo.startsWith('http')
-        ? photo
-        : 'https://school.edusathi.in/$photo';
+   return photo.startsWith('http')
+    ? photo
+    : "${ApiService.Url}/$photo";
   }
 
   void _navigate(BuildContext context, Widget page) {
@@ -77,7 +77,7 @@ class _TeacherSidebarMenuState extends State<TeacherSidebarMenu> {
     try {
       if (token.isNotEmpty) {
         await http.post(
-          Uri.parse('https://school.edusathi.in/api/logout'),
+         Uri.parse("${ApiService.baseUrl}/logout"),
           headers: {
             'Authorization': 'Bearer $token',
             'Accept': 'application/json',

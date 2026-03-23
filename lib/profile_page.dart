@@ -112,11 +112,11 @@ class _ProfilePageState extends State<ProfilePage> {
     if (studentPhoto.isEmpty) {
       return const AssetImage('assets/images/logo_new.png');
     }
-    return NetworkImage(
-      studentPhoto.startsWith('http')
-          ? studentPhoto
-          : 'https://school.edusathi.in/$studentPhoto',
-    );
+   return NetworkImage(
+  studentPhoto.startsWith('http')
+      ? studentPhoto
+      : "${ApiService.Url}/$studentPhoto",
+);
   }
 
   @override

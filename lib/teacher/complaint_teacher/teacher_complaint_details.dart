@@ -29,8 +29,6 @@ class _TeacherComplaintDetailPageState
   List<dynamic> history = [];
   bool isLoading = true;
 
-  final String apiUrl =
-      'https://school.edusathi.in/api/teacher/complaint/history';
 
   @override
   void initState() {
