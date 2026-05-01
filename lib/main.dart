@@ -4,7 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:raj_modern_public_school/Notification/notification_service.dart';
-
+import 'package:raj_modern_public_school/admin/admin_dashboard.dart';
 import 'firebase_options.dart';
 import 'package:raj_modern_public_school/splash_screen.dart';
 import 'package:raj_modern_public_school/login_page.dart';
@@ -72,16 +72,14 @@ class _RootDeciderState extends State<RootDecider> {
 
     _initApp();
   }
-
-  Future<void> _initApp() async {
+ Future<void> _initApp() async {
     try {
       final prefs = await SharedPreferences.getInstance();
 
       final isLoggedIn = prefs.getBool('is_logged_in') ?? false;
       final userType = prefs.getString('user_type') ?? '';
 
-      final secureToken =
-          await _secureStorage.read(key: 'auth_token') ?? '';
+      final secureToken = await _secureStorage.read(key: 'auth_token') ?? '';
       final prefsToken = prefs.getString('auth_token') ?? '';
 
       final token = secureToken.isNotEmpty ? secureToken : prefsToken;
@@ -112,6 +110,8 @@ class _RootDeciderState extends State<RootDecider> {
         return const TeacherDashboardScreen();
       case 'Student':
         return const DashboardScreen();
+      case 'Admin':
+        return const AdminDashboardPage();
       default:
         return LoginPage();
     }

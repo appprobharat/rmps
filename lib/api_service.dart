@@ -201,18 +201,15 @@ class ApiService {
   static const siblingUrl = 'https://rmps.apppro.in/uploads/no_image.png';
 
   // ================= FILE / IMAGE URL =================
-static String getFullUrl(String path) {
-  if (path.isEmpty) return '';
-  if (path.startsWith('http')) return path;
+  static const String noticeUrl = "https://rmps.apppro.in/";
 
-  // remove starting slash (double // avoid)
-  if (path.startsWith('/')) {
-    path = path.substring(1);
+  static String getFullUrl(String path) {
+    if (path.isEmpty) return '';
+
+    if (path.startsWith('http')) return path;
+
+    return "$noticeUrl$path";
   }
-
-  return "$Url/$path";
-}
-
 }
 
 class AppColors {

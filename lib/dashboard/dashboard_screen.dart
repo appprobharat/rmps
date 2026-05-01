@@ -270,7 +270,10 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.pop(confirmContext),
-                              child: const Text('Cancel', style: TextStyle(color: AppColors.primary),),
+                              child: const Text(
+                                'Cancel',
+                                style: TextStyle(color: AppColors.primary),
+                              ),
                             ),
                             ElevatedButton.icon(
                               onPressed: () async {
@@ -306,7 +309,10 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Close', style: TextStyle(color: AppColors.primary),),
+            child: const Text(
+              'Close',
+              style: TextStyle(color: AppColors.primary),
+            ),
           ),
         ],
       ),
@@ -350,6 +356,7 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
       ).showSnackBar(const SnackBar(content: Text('Something went wrong')));
     }
   }
+
   void _showPaymentConfirmationDialog(
     BuildContext dashboardContext,
     int dues,
@@ -381,7 +388,10 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
           ),
           actions: [
             TextButton(
-              child: const Text("Cancel", style: TextStyle(color: AppColors.primary),),
+              child: const Text(
+                "Cancel",
+                style: TextStyle(color: AppColors.primary),
+              ),
               onPressed: () {
                 print('DEBUG: Payment cancelled by user from dialog.');
                 Navigator.pop(dialogContext);
@@ -507,92 +517,83 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
       },
     );
   }
-Future<Map<String, String>?> initiatePayment({
-  required int amount,
-  required int fine,
-}) async {
-  try {
-    final response = await ApiService.post(
-      context,
-      "/student/payment/initiate",
-      body: {
-        'amount': amount.toString(),
-        'fine': fine.toString(),
-      },
-    );
 
-    if (response == null) {
-      debugPrint("❌ initiatePayment: response null");
-      return null;
-    }
+  Future<Map<String, String>?> initiatePayment({
+    required int amount,
+    required int fine,
+  }) async {
+    try {
+      final response = await ApiService.post(
+        context,
+        "/student/payment/initiate",
+        body: {'amount': amount.toString(), 'fine': fine.toString()},
+      );
 
-    debugPrint("DEBUG: StatusCode → ${response.statusCode}");
-    debugPrint("DEBUG: Body → ${response.body}");
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-
-      if (data.containsKey('payment_url') &&
-          data.containsKey('ref_no')) {
-        return {
-          'payment_url': data['payment_url'].toString(),
-          'ref_no': data['ref_no'].toString(),
-        };
-      } else {
-        debugPrint(
-          '❌ initiatePayment: payment_url / ref_no missing',
-        );
+      if (response == null) {
+        debugPrint("❌ initiatePayment: response null");
         return null;
       }
-    } else {
-      debugPrint(
-        '❌ initiatePayment failed → ${response.statusCode}',
-      );
+
+      debugPrint("DEBUG: StatusCode → ${response.statusCode}");
+      debugPrint("DEBUG: Body → ${response.body}");
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        if (data.containsKey('payment_url') && data.containsKey('ref_no')) {
+          return {
+            'payment_url': data['payment_url'].toString(),
+            'ref_no': data['ref_no'].toString(),
+          };
+        } else {
+          debugPrint('❌ initiatePayment: payment_url / ref_no missing');
+          return null;
+        }
+      } else {
+        debugPrint('❌ initiatePayment failed → ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      debugPrint("❌ initiatePayment exception: $e");
       return null;
     }
-  } catch (e) {
-    debugPrint("❌ initiatePayment exception: $e");
-    return null;
   }
-}
-Future<String?> checkPaymentStatus({
-  required String refNo,
-}) async {
-  try {
-    final response = await ApiService.get(
-      context,
-      "/student/payment/status/$refNo",
-    );
 
-    if (response == null) {
-      debugPrint("❌ checkPaymentStatus: response null");
-      return 'error';
-    }
-
-    debugPrint("DEBUG: StatusCode → ${response.statusCode}");
-    debugPrint("DEBUG: Body → ${response.body}");
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-
-      if (data.containsKey('status')) {
-        return data['status'].toString();
-      } else {
-        debugPrint('❌ status key missing');
-        return 'unknown';
-      }
-    } else {
-      debugPrint(
-        '❌ checkPaymentStatus failed → ${response.statusCode}',
+  Future<String?> checkPaymentStatus({required String refNo}) async {
+    try {
+      final response = await ApiService.get(
+        context,
+        "/student/payment/status/$refNo",
       );
+
+      if (response == null) {
+        debugPrint("❌ checkPaymentStatus: response null");
+        return 'error';
+      }
+
+      debugPrint("DEBUG: StatusCode → ${response.statusCode}");
+      debugPrint("DEBUG: Body → ${response.body}");
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        if (data.containsKey('status')) {
+          return data['status'].toString();
+        } else {
+          debugPrint('❌ status key missing');
+          return 'unknown';
+        }
+      } else {
+        debugPrint('❌ checkPaymentStatus failed → ${response.statusCode}');
+        return 'error';
+      }
+    } catch (e) {
+      debugPrint("❌ checkPaymentStatus exception: $e");
       return 'error';
     }
-  } catch (e) {
-    debugPrint("❌ checkPaymentStatus exception: $e");
-    return 'error';
   }
-}
- Widget _buildDialogRow(
+
+  Widget _buildDialogRow(
     String label,
     String value, {
     Color color = Colors.black87,
@@ -623,6 +624,7 @@ Future<String?> checkPaymentStatus({
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -712,19 +714,21 @@ Future<String?> checkPaymentStatus({
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                             FeePayCard(
-                          dues: dues,
-                          fine: fine,
-                          onCardTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => FeeDetailsPage()),
-                          ),
-                          onPayNowTap: () => _showPaymentConfirmationDialog(
-                            context,
-                            dues,
-                            fine,
-                          ),
-                        ),
+                            FeePayCard(
+                              dues: dues,
+                              fine: fine,
+                              onCardTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => FeeDetailsPage(),
+                                ),
+                              ),
+                              onPayNowTap: () => _showPaymentConfirmationDialog(
+                                context,
+                                dues,
+                                fine,
+                              ),
+                            ),
                             GestureDetector(
                               child: DashboardCard(
                                 title: 'Last Pay',
@@ -977,13 +981,13 @@ class InfoCard extends StatelessWidget {
         : Colors.indigo.shade50;
 
     final String? attachment = item["Attachment"];
-    final String schoolId = item["SchoolId"]?.toString() ?? '';
-    final bool hasAttachment =
-        attachment != null && attachment.isNotEmpty && schoolId.isNotEmpty;
 
-  final String fullAttachmentUrl = hasAttachment
-    ? ApiService.getFullUrl(attachment)
-    : '';
+    final bool hasAttachment =
+        attachment != null && attachment.toString().isNotEmpty;
+
+    final String fullAttachmentUrl = hasAttachment
+        ? ApiService.getFullUrl(attachment)
+        : '';
 
     debugPrint("📎 NOTICE ATTACHMENT URL: $fullAttachmentUrl");
 
@@ -1465,7 +1469,6 @@ Widget sidebarTile({
     },
   );
 }
-
 
 class FeePayCard extends StatelessWidget {
   final int dues;

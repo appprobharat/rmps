@@ -623,10 +623,10 @@ class _MarkAttendancePageState extends State<MarkAttendancePage> {
                                     ),
                                   );
 
-                                  return; // stop submission
+                                  return;
                                 }
 
-                                // If all students are marked
+                      
                                 submitAttendance();
                               }
                             },
