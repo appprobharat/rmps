@@ -132,6 +132,7 @@ class _PaymentPageState extends State<PaymentPage> {
     }
   }
 
+
   // ---------------- UI (UNCHANGED) ----------------
   @override
   Widget build(BuildContext context) {
@@ -235,7 +236,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                   Icons.download,
                                   color: AppColors.primary,
                                 ),
-                                onPressed: () => downloadReceipt(payment['id']),
+                                 onPressed: () => downloadReceipt(payment['id']),
                               ),
                             ),
                           ],

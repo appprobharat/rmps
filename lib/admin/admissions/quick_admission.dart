@@ -116,8 +116,6 @@ class _QuickAdmissionPageState extends State<QuickAdmissionPage> {
     setState(() => loadingClass = true);
 
     final res = await ApiService.post(context, "/get_class");
-    debugPrint("📡 CLASS API STATUS: ${res?.statusCode}");
-    debugPrint("📦 CLASS API BODY: ${res?.body}");
 
     if (res != null && res.statusCode == 200) {
       classList = List<Map<String, dynamic>>.from(

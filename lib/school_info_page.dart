@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:raj_modern_public_school/api_service.dart';
 
@@ -28,8 +29,6 @@ class _SchoolInfoPageState extends State<SchoolInfoPage> {
     try {
       final response = await ApiService.post(context, '/school');
 
-      
-
       if (response == null) {
         // auto-logout already handled
         if (mounted) setState(() => isLoading = false);
@@ -43,7 +42,7 @@ class _SchoolInfoPageState extends State<SchoolInfoPage> {
       }
 
       final data = jsonDecode(response.body);
-debugPrint("📡 RESPONSE STATUS: ${response.body}");
+      debugPrint("📡 RESPONSE STATUS: ${response.body}");
       if (!mounted) return;
 
       setState(() {
@@ -96,6 +95,7 @@ debugPrint("📡 RESPONSE STATUS: ${response.body}");
         await file.writeAsBytes(response.bodyBytes, flush: true);
 
         if (!mounted) return;
+        await OpenFile.open(file.path);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("✅ QR saved to Downloads folder")),
         );
@@ -109,6 +109,7 @@ debugPrint("📡 RESPONSE STATUS: ${response.body}");
         await file.writeAsBytes(response.bodyBytes, flush: true);
 
         if (!mounted) return;
+        await OpenFile.open(file.path);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("✅ QR saved in Files app")),
         );

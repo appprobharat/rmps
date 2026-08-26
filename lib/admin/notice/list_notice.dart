@@ -351,40 +351,41 @@ class _NoticeListPageState extends State<NoticeListPage> {
     if (isDownloading) return;
     isDownloading = true;
 
-    try {
-      final fileName = filePath.split('/').last;
-      final dio = Dio();
+    final fullUrl = filePath.toString();
 
+    try {
+      final fileName = fullUrl.split('/').last;
+      final dio = Dio();
       late String savePath;
 
-      // ✅ ANDROID SAFE STORAGE
+      // ================= ANDROID =================
       if (Platform.isAndroid) {
-        final dir = await getExternalStorageDirectory();
-        savePath = '${dir!.path}/$fileName';
+        final downloadsDir = Directory('/storage/emulated/0/Download');
+        savePath = '${downloadsDir.path}/$fileName';
 
-        await dio.download(filePath, savePath);
+        await dio.download(fullUrl, savePath);
 
         // ✅ Preview open
         await OpenFile.open(savePath);
 
         if (context.mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text("✅ Saved: $fileName")));
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("📥 Downloaded & Preview opened")),
+          );
         }
       }
 
-      // ✅ iOS
+      // ================= iOS =================
       if (Platform.isIOS) {
         final dir = await getApplicationDocumentsDirectory();
         savePath = '${dir.path}/$fileName';
 
-        await dio.download(filePath, savePath);
+        await dio.download(fullUrl, savePath);
+
+        // ✅ Preview open
         await OpenFile.open(savePath);
       }
     } catch (e) {
-      debugPrint("Download error: $e");
-
       if (context.mounted) {
         ScaffoldMessenger.of(
           context,
